@@ -1,0 +1,20 @@
+adalyah
+*~
+*.o
+adalyah-*.tar.xz
+
+# autoconfage
+Makefile.in
+aclocal.m4
+autom4te.cache/
+config.h.in
+configure
+depcomp
+install-sh
+missing
+.deps/
+Makefile
+config.h
+config.log
+config.status
+stamp-h1
