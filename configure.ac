@@ -7,5 +7,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AC_PROG_CXX
 AC_PROG_INSTALL
 
+# Check if anyone reads build logs.
+AC_SCO
+
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT
