@@ -1,5 +1,5 @@
 bin_PROGRAMS=adalyah
-AM_CXXFLAGS = -Wall -std=c++11
+AM_CXXFLAGS = -Wall
 adalyah_SOURCES = \
 	errors.cc \
 	main.cc \
