@@ -39,6 +39,14 @@ struct coord
     {
         return coord(x - c.x, y - c.y);
     }
+
+    int len() const
+    {
+        if ((x ^ y) < 0) // different signs
+            return abs(x) + abs(y);
+        else
+            return max(abs(x), abs(y));
+    }
 };
 
 extern coord Compass[6];
