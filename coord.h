@@ -47,6 +47,8 @@ struct coord
         else
             return max(abs(x), abs(y));
     }
+
+    coord rotate(int dir) const;
 };
 
 extern coord Compass[6];
