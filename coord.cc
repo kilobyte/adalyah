@@ -29,6 +29,26 @@ coord coord::rotate(int d) const // ↺
                  x * Rotations[d][1] + y * Rotations[d][3]);
 }
 
+int coord::dir() const
+{
+    if (y == 0)
+        return x >= 0 ? 0 : 3;
+    if (y < 0)
+        if (x > 0)
+            return 0;
+        else if (x > y)
+            return 1;
+        else
+            return 2;
+    else
+        if (x < 0)
+            return 3;
+        else if (x < y)
+            return 4;
+        else
+            return 5;
+}
+
 void test_coord()
 {
     assert(coord(1,2) == coord(1,2));
@@ -46,4 +66,17 @@ void test_coord()
     for (int i = 0; i < 6; i++)
         for (int j = 0; j < 6; j++)
             assert(Compass[i].rotate(j - i) == Compass[j]);
+
+    assert(coord(0,0).dir() == 0);
+    for (int i = 0; i < 6; i++)
+        assert(Compass[i].dir() == i);
+    for (int x = -2; x <= +2; x++)
+        for (int y = -2; y <= +2; y++)
+            if (x || y)
+            {
+                int dir = coord(x,y).dir();
+                assert((dir + 3) % 6 == coord(-x,-y).dir());
+                for (int i = 0; i < 6; i++)
+                    assert(coord(x,y).rotate(i).dir() == (dir + i) % 6);
+            }
 }

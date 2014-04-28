@@ -49,6 +49,7 @@ struct coord
     }
 
     coord rotate(int dir) const;
+    int dir() const;
 };
 
 extern coord Compass[6];
