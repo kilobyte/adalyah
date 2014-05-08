@@ -66,6 +66,13 @@ void test_coord()
     for (int i = 0; i < 6; i++)
         for (int j = 0; j < 6; j++)
             assert(Compass[i].rotate(j - i) == Compass[j]);
+    for (int x = -2; x <= 2; x++)
+        for (int y = -2; y <= 2; y++)
+        {
+            coord c(x,y);
+            for (int i = 0; i <= 6; i++)
+                assert(c.rotate(i).len() == c.len());
+        }
 
     assert(coord(0,0).dir() == 0);
     for (int i = 0; i < 6; i++)
