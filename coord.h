@@ -54,5 +54,18 @@ struct coord
 
 extern coord Compass[6];
 
+class angle360_iterator : public iterator<forward_iterator_tag, coord>
+{
+    public:
+        angle360_iterator(int angle, coord start = coord(0,0));
+        coord operator *() const { return cur; }
+        const coord* operator ->() const { return &cur; }
+        void operator ++();
+        void operator ++(int) { ++(*this); }
+    private:
+        coord cur;
+        int angle, err;
+};
+
 void test_coord();
 #endif

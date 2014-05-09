@@ -49,6 +49,19 @@ int coord::dir() const
             return 5;
 }
 
+angle360_iterator::angle360_iterator(int _angle, coord start)
+    : cur(start), err(0)
+{
+    angle = (_angle + 1800000000) % 360;
+}
+
+void angle360_iterator::operator ++()
+{
+    int ac = (angle + err + 1800000030) / 60 % 6;
+    err += angle - ac * 60;
+    cur += Compass[ac];
+}
+
 void test_coord()
 {
     assert(coord(1,2) == coord(1,2));
