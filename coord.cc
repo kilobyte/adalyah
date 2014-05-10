@@ -62,6 +62,29 @@ void angle360_iterator::operator ++()
     cur += Compass[ac];
 }
 
+spiral_iterator::spiral_iterator(coord start, int radius, bool inc_center)
+    : cur(start), r(0), a1(5), a2(0), max_radius(radius)
+{
+    if (!inc_center)
+        ++(*this);
+}
+
+void spiral_iterator::operator ++()
+{
+    if (++a2 >= r)
+    {
+        a2 = 0;
+        if (++a1 >= 6)
+        {
+            a1 = 0;
+            cur += Compass[4];
+            ++r;
+        }
+    }
+
+    cur += Compass[a1];
+}
+
 void test_coord()
 {
     assert(coord(1,2) == coord(1,2));

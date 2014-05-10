@@ -67,5 +67,21 @@ class angle360_iterator : public iterator<forward_iterator_tag, coord>
         int angle, err;
 };
 
+class spiral_iterator : public iterator<forward_iterator_tag, coord>
+{
+    public:
+        spiral_iterator(coord center = coord(0,0), int radius = 0x7fffffff,
+                        bool inc_center = false);
+        coord operator *() const { return cur; }
+        const coord* operator ->() const { return &cur; }
+        void operator ++();
+        void operator ++(int) { ++(*this); }
+        operator bool() const { return r <= max_radius; }
+    private:
+        coord cur;
+        int r, a1, a2;
+        int max_radius;
+};
+
 void test_coord();
 #endif
