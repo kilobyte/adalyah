@@ -49,6 +49,18 @@ int coord::dir() const
             return 5;
 }
 
+// This is only an approximation.  Even in theory, vectors longer than 60
+// can't be represented uniquely -- and here, the first hex that
+// angle360_iterator for its angle360 doesn't visit is at distance 34.
+int coord::angle360() const
+{
+    int d = dir();
+    coord s = rotate(-d);
+    if (!s.y)
+        return d * 60;
+    return d * 60 - s.y * 60 / (s.x - s.y);
+}
+
 angle360_iterator::angle360_iterator(int _angle, coord start)
     : cur(start), err(0)
 {
@@ -122,4 +134,23 @@ void test_coord()
                 for (int i = 0; i < 6; i++)
                     assert(coord(x,y).rotate(i).dir() == (dir + i) % 6);
             }
+
+    assert(coord(0,0).angle360() == 0);
+    assert(coord(1,-1).angle360() == 30);
+    assert(coord(3,-1).angle360() == 15);
+    for (int i = 0; i < 6; i++)
+    {
+        assert(Compass[i].angle360() == i * 60);
+        assert((Compass[i] + Compass[i]).angle360() == i * 60);
+        assert((Compass[i] + Compass[(i+1)%6]).angle360() == i * 60 + 30);
+    }
+
+    for (spiral_iterator si(coord(0,0), 30, true); si; ++si)
+    {
+        int len = si->len();
+        angle360_iterator a(si->angle360());
+        while (len-- > 0)
+            ++a;
+        assert(*a == *si);
+    }
 }
