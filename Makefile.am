@@ -1,10 +1,10 @@
 bin_PROGRAMS=adalyah
 AM_CXXFLAGS = -Wall
 adalyah_SOURCES = \
-	coord.cc \
-	colours.cc \
+	coord.cc coord.h \
+	colours.cc colours.h \
 	errors.cc \
 	main.cc \
-	test.cc \
-	unicode.cc \
+	test.cc test.h \
+	unicode.cc unicode.h\
 	adalyah.h
