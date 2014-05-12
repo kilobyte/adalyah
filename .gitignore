@@ -12,6 +12,7 @@ configure
 depcomp
 install-sh
 missing
+compile
 .deps/
 Makefile
 config.h
