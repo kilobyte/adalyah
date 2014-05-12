@@ -22,3 +22,5 @@ NORETURN die(const char *file, unsigned line, PRINTF(2, ));
 
 NORETURN assert_failed(const char *file, unsigned line, const char *err);
 #define assert(x) do if (!(x)) assert_failed(__FILE__, __LINE__, #x); while (0)
+
+typedef uint32_t ucs_t;

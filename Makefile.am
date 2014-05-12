@@ -5,4 +5,5 @@ adalyah_SOURCES = \
 	errors.cc \
 	main.cc \
 	test.cc \
+	unicode.cc \
 	adalyah.h
