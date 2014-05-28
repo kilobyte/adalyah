@@ -71,6 +71,17 @@ static int rgb_to_col256(rgb_t c)
     return res;
 }
 
+rgb_t blend(rgb_t a, rgb_t b, int x)
+{
+    assert(x >= 0);
+    assert(x <= 256);
+    unsigned int y = 256 - x;
+    a.r = (a.r*(unsigned int)x + b.r*y + 128) >> 8;
+    a.g = (a.g*(unsigned int)x + b.g*y + 128) >> 8;
+    a.b = (a.b*(unsigned int)x + b.b*y + 128) >> 8;
+    return a;
+}
+
 #if 0
 void display_gradient()
 {
