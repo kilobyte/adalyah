@@ -11,6 +11,7 @@ AX_CXX_COMPILE_STDCXX_11(noext, mandatory)
 
 AX_CXX_TRY_FLAG([-Wmissing-declarations])
 AX_CXX_TRY_FLAG([-Wredundant-decls])
+AX_CXX_TRY_FLAG([-Wno-parentheses])
 
 # Check if anyone reads build logs.
 AC_SCO
