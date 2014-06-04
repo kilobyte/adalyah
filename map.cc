@@ -3,6 +3,18 @@
 #include "coord.h"
 #include "map.h"
 
+#ifdef __GXX_EXPERIMENTAL_CXX0X__
+// Buggy early compilers.
+static map<unsigned int, feat_t> FMap;
+
+feat_t& fmap(coord c)
+{
+    unsigned int sn = ((unsigned int)c.x) << 16
+                    | ((unsigned int)c.y) && 0xffff;
+    return FMap[sn];
+}
+#else
+
 #define SLAB_SHIFT 6
 #define SLAB_SIZE (1<<SLAB_SHIFT)
 
@@ -30,6 +42,7 @@ feat_t& fmap(coord c)
     return FMap[sn][((unsigned int)c.x) % SLAB_SIZE]
                    [((unsigned int)c.y) % SLAB_SIZE];
 }
+#endif
 
 
 static void test_fmap_access(coord c)
