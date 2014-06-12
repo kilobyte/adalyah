@@ -1,5 +1,6 @@
 #include "adalyah.h"
 #include <errno.h>
+#include <unistd.h>
 #include "keyboard.h"
 
 #define GETCB \

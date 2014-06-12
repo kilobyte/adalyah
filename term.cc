@@ -1,6 +1,7 @@
 #include "adalyah.h"
 #include <sys/ioctl.h>
 #include <termios.h>
+#include <unistd.h>
 #include "term.h"
 
 static struct termios old_tattr;
