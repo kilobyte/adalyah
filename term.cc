@@ -5,7 +5,7 @@
 #include "term.h"
 
 static struct termios old_tattr;
-term_layout_t term_layout;
+term_layout TermLayout;
 
 void term_init(void)
 {
@@ -44,10 +44,10 @@ void term_getsize(void)
 
     if (ioctl(1, TIOCGWINSZ, &ts) || ts.ws_row <= 0 || ts.ws_col <= 0)
     {
-        term_layout.sy = 25;
-        term_layout.sx = 80;
+        TermLayout.sy = 25;
+        TermLayout.sx = 80;
         return;
     }
-    term_layout.sy = ts.ws_row;
-    term_layout.sx = ts.ws_col;
+    TermLayout.sy = ts.ws_row;
+    TermLayout.sx = ts.ws_col;
 }

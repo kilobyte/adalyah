@@ -4,8 +4,8 @@
 typedef struct
 {
     int sx, sy;
-} term_layout_t;
-extern term_layout_t term_layout;
+} term_layout;
+extern term_layout TermLayout;
 
 void term_getsize(void);
 void term_init(void);
