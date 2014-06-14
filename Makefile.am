@@ -5,6 +5,7 @@ adalyah_SOURCES = \
 	colours.cc colours.h \
 	errors.cc \
 	keyboard.cc keyboard.h \
+	los.cc los.h \
 	main.cc \
 	map.cc map.h \
 	term.cc term.h \
