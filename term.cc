@@ -7,11 +7,13 @@
 static struct termios old_tattr;
 term_layout TermLayout;
 static int prev_col256;
+static bool term_inited = false;
 
 void term_init(void)
 {
     struct termios tattr;
 
+    term_inited = true;
     if (!isatty(0)) // not a terminal
         return;
 
@@ -38,9 +40,14 @@ void term_init(void)
 
 void term_restore(void)
 {
+    fflush(stdout);
+    if (!term_inited)
+        return;
+
     tcdrain(0);
     tcsetattr(0, TCSADRAIN, &old_tattr);
     printf("\e[0m");
+    fflush(stdout);
 }
 
 void term_getsize(void)

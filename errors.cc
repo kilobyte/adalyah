@@ -2,12 +2,15 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include "term.h"
 
 #undef die
 NORETURN die(const char *file, unsigned line, const char *format, ...)
 {
     va_list args;
     char *msg;
+
+    term_restore();
 
     va_start(args, format);
     vasprintf(&msg, format, args);
@@ -19,6 +22,7 @@ NORETURN die(const char *file, unsigned line, const char *format, ...)
 
 NORETURN assert_failed(const char *file, unsigned line, const char *err)
 {
+    term_restore();
     fprintf(stderr, "ASSERT FAILED at %s line %u: %s\n", file, line, err);
     exit(1);
 }
