@@ -8,6 +8,7 @@ adalyah_SOURCES = \
 	los.cc los.h \
 	main.cc \
 	map.cc map.h \
+	random.cc random.h \
 	term.cc term.h \
 	test.cc test.h \
 	unicode.cc unicode.h\
