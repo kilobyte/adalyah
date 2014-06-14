@@ -18,6 +18,8 @@ using namespace std;
 # define PRINTF(x, dfmt) const char *format dfmt, ...
 #endif
 
+#define ARRAYSZ(x) (sizeof(x) / sizeof(x[0]))
+
 NORETURN die(const char *file, unsigned line, PRINTF(2, ));
 #define die(...) die(__FILE__, __LINE__, __VA_ARGS__)
 

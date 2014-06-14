@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include "keyboard.h"
+#include "map.h"
 #include "term.h"
 #include "test.h"
 
@@ -64,6 +65,8 @@ int main(int argc, char **argv)
 
     term_init();
     term_getsize();
+    generate_map();
+    draw_map();
     term_restore();
 
     return 0;

@@ -1,7 +1,7 @@
 #include "adalyah.h"
 #include <map>
-#include "coord.h"
 #include "map.h"
+#include "term.h"
 
 #ifdef __GXX_EXPERIMENTAL_CXX0X__
 // Buggy early compilers.
@@ -10,7 +10,7 @@ static map<unsigned int, feat_t> FMap;
 feat_t& fmap(coord c)
 {
     unsigned int sn = ((unsigned int)c.x) << 16
-                    | ((unsigned int)c.y) && 0xffff;
+                    | ((unsigned int)c.y) & 0xffff;
     return FMap[sn];
 }
 #else
@@ -44,6 +44,82 @@ feat_t& fmap(coord c)
 }
 #endif
 
+static const char* smap[] =
+{
+    "########## ## ## ## ## ## ## ## ## ## ",
+    "#.........##.##.##.##.##.##.##.##.##.# ",
+    " #..####...#..........................#",
+    " #..#   #...#..........................#",
+    "  #.# ## #..##..........................#",
+    "  #.# #.# #.#.#.........................#",
+    "   #.##.# #.#..#.........................#",
+    "   #..#.# #.#...#........................#",
+    "    #...###.#....#........................#",
+    "    #.......#.....#.......................#",
+    "     #......#......#.......................#",
+    "     #......#.......#......................#",
+    "      #.....#........#......................#",
+    "      #.....#.........#.....................#",
+    "       #....#..........#.....................#",
+    "       #.....#.........#.....................#",
+    "        #...#............#....................#",
+    "        #...###.........###...................#",
+    "         ####  ##########  ####################",
+};
+
+void generate_map(void)
+{
+    for (int y = 0; y < (int)ARRAYSZ(smap); ++y)
+        for (const char *x = smap[y]; *x; ++x)
+        {
+            feat_t f = FEAT_VOID;
+            switch (*x)
+            {
+            case '.': f = FEAT_FLOOR; break;
+            case '#': f = FEAT_WALL; break;
+            }
+            fmap(coord(x - smap[y] - 24, y - 9)) = f;
+        }
+}
+
+static const char* feat_glyphs[] =
+{
+    "　",
+    "░░",
+    "．",
+};
+
+void draw_map(void)
+{
+    coord c0(0,0);
+    int cl = -((TermLayout.sx - 2) / 4);
+    int ct = -9;
+    int cb = +9;
+
+    for (int y = ct; y <= cb; ++y)
+    {
+        int cw = (TermLayout.sx - (y&1)) / 2;
+        if (y&1)
+            printf(" ");
+        for (int x = cl + ((y-1)>>1); cw; --cw, ++x)
+        {
+            if (!x && !y)
+            {
+                printf("\e[0m＠");
+                continue;
+            }
+
+            coord c(c0.x + x, c0.y + y);
+            feat_t f = fmap(c);
+            if ((c0 - c).len() <= 8)
+                printf("\e[%sm", (f == FEAT_WALL) ? "0;33" : "0");
+            else
+                printf("\e[1;30m");
+            printf("%s", feat_glyphs[f]);
+        }
+        printf("\e[0m\n\r");
+    }
+}
 
 static void test_fmap_access(coord c)
 {
