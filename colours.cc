@@ -1,6 +1,15 @@
 #include "adalyah.h"
 #include "colours.h"
 
+rgb_t rgb(uint32_t col)
+{
+    rgb_t c;
+    c.r = (col >> 16) & 0xff;
+    c.g = (col >>  8) & 0xff;
+    c.b =  col        & 0xff;
+    return c;
+}
+
 static rgb_t col256_to_rgb(int i)
 {
     rgb_t c;
@@ -52,7 +61,7 @@ static int rgb_diff(rgb_t a, rgb_t b)
     return diff;
 }
 
-static int rgb_to_col256(rgb_t c)
+int rgb_to_col256(rgb_t c)
 {
     int c1 = rgb_to_col16(c);
     int bd = rgb_diff(c, col256_to_rgb(c1));

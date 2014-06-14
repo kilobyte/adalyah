@@ -6,6 +6,7 @@
 
 static struct termios old_tattr;
 term_layout TermLayout;
+static int prev_col256;
 
 void term_init(void)
 {
@@ -30,12 +31,16 @@ void term_init(void)
     tattr.c_cc[VMIN]  = 1;
     tattr.c_cc[VTIME] = 0;
     tcsetattr(0, TCSANOW, &tattr);
+
+    printf("\e[0m");
+    prev_col256 = -1;
 }
 
 void term_restore(void)
 {
     tcdrain(0);
     tcsetattr(0, TCSADRAIN, &old_tattr);
+    printf("\e[0m");
 }
 
 void term_getsize(void)
@@ -50,4 +55,14 @@ void term_getsize(void)
     }
     TermLayout.sy = ts.ws_row;
     TermLayout.sx = ts.ws_col;
+}
+
+void set_colour(rgb_t c)
+{
+    int nc = rgb_to_col256(c);
+    if (prev_col256 == nc)
+        return;
+
+    prev_col256 = nc;
+    printf("\e[38;5;%dm", nc);
 }

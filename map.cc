@@ -105,19 +105,20 @@ void draw_map(void)
         {
             if (!x && !y)
             {
-                printf("\e[0m＠");
+                set_colour(rgb(0xaaaaaa));
+                printf("＠");
                 continue;
             }
 
             coord c(c0.x + x, c0.y + y);
             feat_t f = fmap(c);
             if ((c0 - c).len() <= 8)
-                printf("\e[%sm", (f == FEAT_WALL) ? "0;33" : "0");
+                set_colour(rgb((f == FEAT_WALL) ? 0xaaaa00 : 0xaaaaaa));
             else
-                printf("\e[1;30m");
+                set_colour(rgb(0x555555));
             printf("%s", feat_glyphs[f]);
         }
-        printf("\e[0m\n\r");
+        printf("\n\r");
     }
 }
 
