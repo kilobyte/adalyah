@@ -94,10 +94,10 @@ void draw_map(void)
 {
     coord c0(0,0);
     int cl = -((TermLayout.sx - 2) / 4);
-    int ct = -9;
-    int cb = +9;
+    int ct = -((TermLayout.map_lines - 1) / 2);
+    int ch = TermLayout.map_lines;
 
-    for (int y = ct; y <= cb; ++y)
+    for (int y = ct; ch; --ch, ++y)
     {
         int cw = (TermLayout.sx - (y&1)) / 2;
         if (y&1)

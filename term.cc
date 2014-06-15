@@ -58,10 +58,15 @@ void term_getsize(void)
     {
         TermLayout.sy = 25;
         TermLayout.sx = 80;
-        return;
     }
-    TermLayout.sy = ts.ws_row;
-    TermLayout.sx = ts.ws_col;
+    else
+    {
+        TermLayout.sy = ts.ws_row;
+        TermLayout.sx = ts.ws_col;
+    }
+
+    TermLayout.map_lines = TermLayout.sy*2/3 + 3;
+    TermLayout.msg_lines = max(TermLayout.sy - TermLayout.map_lines, 1);
 }
 
 void set_colour(rgb_t c)

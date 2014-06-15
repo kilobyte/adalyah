@@ -5,6 +5,8 @@
 typedef struct
 {
     int sx, sy;
+    int map_lines;
+    int msg_lines;
 } term_layout;
 extern term_layout TermLayout;
 
