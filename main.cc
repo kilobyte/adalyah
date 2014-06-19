@@ -1,5 +1,6 @@
 #include "adalyah.h"
 #include <locale.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <getopt.h>
@@ -114,20 +115,33 @@ static void input(void)
 
 static NORETURN input_loop(void)
 {
+    sigset_t sigs, nosigs;
+    sigemptyset(&nosigs);
+    sigemptyset(&sigs);
+    sigaddset(&sigs, SIGWINCH);
+
     while (1)
     {
-        struct timeval tv;
+        struct timespec tv;
         tv.tv_sec  = 1; // TODO: time until next event
-        tv.tv_usec = 0;
+        tv.tv_nsec = 0;
 
         fd_set readfdmask;
         FD_ZERO(&readfdmask);
         FD_SET(0, &readfdmask);
-        select(1, &readfdmask, 0, 0, &tv);
 
-//        if (TermLayout.need_resize)
-//            term_getsize();
-        if (FD_ISSET(0, &readfdmask))
+        sigprocmask(SIG_BLOCK, &sigs, 0);
+        if (TermLayout.need_resize)
+            tv.tv_sec = tv.tv_nsec = 0;
+        int sres = pselect(1, &readfdmask, 0, 0, &tv, &nosigs);
+        sigprocmask(SIG_UNBLOCK, &sigs, 0);
+
+        if (TermLayout.need_resize)
+        {
+            term_getsize();
+            draw_screen();
+        }
+        if (sres>=0 && FD_ISSET(0, &readfdmask))
             input();
     }
 }
@@ -138,6 +152,7 @@ int main(int argc, char **argv)
     parse_options(argc, argv);
 
     term_init();
+    setup_signals();
     term_getsize();
     generate_map();
     draw_screen();

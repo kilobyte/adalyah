@@ -1,4 +1,5 @@
 #include "adalyah.h"
+#include <signal.h>
 #include <sys/ioctl.h>
 #include <termios.h>
 #include <unistd.h>
@@ -54,6 +55,7 @@ void term_getsize(void)
 {
     struct winsize ts;
 
+    TermLayout.need_resize = false;
     if (ioctl(1, TIOCGWINSZ, &ts) || ts.ws_row <= 0 || ts.ws_col <= 0)
     {
         TermLayout.sy = 25;
@@ -67,6 +69,19 @@ void term_getsize(void)
 
     TermLayout.map_lines = TermLayout.sy*2/3 + 3;
     TermLayout.msg_lines = max(TermLayout.sy - TermLayout.map_lines, 1);
+}
+
+static void sigwinch(int dummy)
+{
+    TermLayout.need_resize = true;
+}
+
+void setup_signals(void)
+{
+    struct sigaction sa;
+    sa.sa_handler = sigwinch;
+    sa.sa_flags   = 0;
+    sigaction(SIGWINCH, &sa, nullptr);
 }
 
 void set_colour(rgb_t c)
