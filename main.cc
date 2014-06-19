@@ -25,7 +25,7 @@ static NORETURN keyboard_test(void)
         if (ch == 27)
             printf("\e[32m%x\e[1;33mESC\e[0m ", ch);
         else if (ch < 32)
-            printf("\e[32m%x\e[1;33m¤\e[0m ", ch);
+            printf("\e[32m%x-%x\e[1;33m¤\e[0m ", ch&0xff, -(ch&~0xff));
         else
             printf("\e[32m%x\e[1;31m%C\e[0m ", ch, ch);
         fflush(stdout);
@@ -58,6 +58,80 @@ static void parse_options(int argc, char **argv)
         }
 }
 
+static void draw_screen(void)
+{
+    printf("\e[2J");
+    draw_map();
+    fflush(stdout);
+}
+
+static void move_player(coord d)
+{
+    You.pos += d;
+    draw_map();
+}
+
+static void input(void)
+{
+    int ch = getch();
+    switch (ch)
+    {
+    case 'q':       // q
+    case 27:        // Esc
+        term_restore();
+        exit(0);
+
+    case 'D'-0x500: // ←
+    case 'D'-0x300:
+    case 't'-0x200:
+        move_player(coord(-1,0));
+        break;
+    case 'C'-0x500: // →
+    case 'C'-0x300:
+    case 'v'-0x200:
+        move_player(coord(1,0));
+        break;
+    case 'H'-0x200: // Home
+    case 'w'-0x200:
+        move_player(coord(-1,-1));
+        break;
+    case 'F'-0x200: // End
+    case 'q'-0x200:
+        move_player(coord(0,1));
+        break;
+    case   5-0x600: // PgUp
+    case  55-0x600:
+    case 'y'-0x200:
+        move_player(coord(0,-1));
+        break;
+    case   6-0x600: // PgDn
+    case  66-0x600:
+    case 's'-0x200:
+        move_player(coord(1,1));
+        break;
+    }
+}
+
+static NORETURN input_loop(void)
+{
+    while (1)
+    {
+        struct timeval tv;
+        tv.tv_sec  = 1; // TODO: time until next event
+        tv.tv_usec = 0;
+
+        fd_set readfdmask;
+        FD_ZERO(&readfdmask);
+        FD_SET(0, &readfdmask);
+        select(1, &readfdmask, 0, 0, &tv);
+
+//        if (TermLayout.need_resize)
+//            term_getsize();
+        if (FD_ISSET(0, &readfdmask))
+            input();
+    }
+}
+
 int main(int argc, char **argv)
 {
     setlocale(LC_ALL, "");
@@ -66,7 +140,8 @@ int main(int argc, char **argv)
     term_init();
     term_getsize();
     generate_map();
-    draw_map();
+    draw_screen();
+    input_loop();
     term_restore();
 
     return 0;

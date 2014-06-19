@@ -4,6 +4,8 @@
 #include "map.h"
 #include "term.h"
 
+struct you You = { coord(0,0) };
+
 #ifdef __GXX_EXPERIMENTAL_CXX0X__
 // Buggy early compilers.
 static map<unsigned int, feat_t> FMap;
@@ -81,6 +83,8 @@ void generate_map(void)
             }
             fmap(coord(x - smap[y] - 24, y - 9)) = f;
         }
+
+    You.pos = coord(0,0);
 }
 
 static const char* feat_glyphs[] =
@@ -92,11 +96,12 @@ static const char* feat_glyphs[] =
 
 void draw_map(void)
 {
-    coord c0(0,0);
+    coord c0 = You.pos;
     int cl = -((TermLayout.sx - 2) / 4);
     int ct = -((TermLayout.map_lines - 1) / 2);
     int ch = TermLayout.map_lines;
 
+    printf("\e[H");
     for (int y = ct; ch; --ch, ++y)
     {
         int cw = (TermLayout.sx - (y&1)) / 2;
