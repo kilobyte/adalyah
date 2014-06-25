@@ -85,29 +85,37 @@ static void input(void)
     case 'D'-0x500: // ←
     case 'D'-0x300:
     case 't'-0x200:
+    case 'g':
         move_player(coord(-1,0));
         break;
     case 'C'-0x500: // →
     case 'C'-0x300:
     case 'v'-0x200:
+    case 'j':
         move_player(coord(1,0));
         break;
     case 'H'-0x200: // Home
     case 'w'-0x200:
+    case 'y': // normal keyboard
+    case 't': // N900
         move_player(coord(-1,-1));
         break;
     case 'F'-0x200: // End
     case 'q'-0x200:
+    case 'b':
         move_player(coord(0,1));
         break;
     case   5-0x600: // PgUp
     case  55-0x600:
     case 'y'-0x200:
+    case 'u':
         move_player(coord(0,-1));
         break;
     case   6-0x600: // PgDn
     case  66-0x600:
     case 's'-0x200:
+    case 'n': // normal keyboard
+    case 'm': // N900
         move_player(coord(1,1));
         break;
     }
