@@ -124,7 +124,7 @@ void draw_map(void)
                 set_colour(rgb(0x555555));
             printf("%s", feat_glyphs[f]);
         }
-        printf("\n\r");
+        printf("\e[B\e[G");
     }
 }
 

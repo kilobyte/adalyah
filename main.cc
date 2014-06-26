@@ -72,6 +72,7 @@ static void move_player(coord d)
         return;
     You.pos += d;
     draw_map();
+    fflush(stdout);
 }
 
 static void input(void)
