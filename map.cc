@@ -101,7 +101,7 @@ void draw_map(void)
     int ct = -((TermLayout.map_lines - 1) / 2);
     int ch = TermLayout.map_lines;
 
-    printf("\e[H");
+    printf("\e[?25l\e[H");
     for (int y = ct; ch; --ch, ++y)
     {
         int cw = (TermLayout.sx - (y&1)) / 2;
@@ -126,6 +126,7 @@ void draw_map(void)
         }
         printf("\e[B\e[G");
     }
+    printf("\e[?25h");
 }
 
 static void test_fmap_access(coord c)

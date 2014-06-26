@@ -47,7 +47,7 @@ void term_restore(void)
 
     tcdrain(0);
     tcsetattr(0, TCSADRAIN, &old_tattr);
-    printf("\e[0m");
+    printf("\e[?25h\e[0m");
     fflush(stdout);
 }
 
