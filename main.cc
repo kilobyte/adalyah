@@ -6,6 +6,7 @@
 #include <getopt.h>
 #include "keyboard.h"
 #include "map.h"
+#include "random.h"
 #include "term.h"
 #include "test.h"
 
@@ -160,6 +161,7 @@ static NORETURN input_loop(void)
 int main(int argc, char **argv)
 {
     setlocale(LC_ALL, "");
+    seed_rng();
     parse_options(argc, argv);
 
     term_init();
