@@ -1,6 +1,7 @@
 #include "adalyah.h"
 #include "los.h"
 #include "map.h"
+#include "random.h"
 
 #include "term.h"
 
@@ -42,7 +43,10 @@ bool vision(coord a, coord b)
 
 void test_vision(void)
 {
-    for (spiral_iterator a(coord(0,0), 20, true); a; ++a)
+    for (spiral_iterator a(coord(0,0), 30, true); a; ++a)
+        fmap(*a) = rnd(3) ? FEAT_FLOOR : FEAT_WALL;
+
+    for (spiral_iterator a(coord(0,0), 30, true); a; ++a)
     {
         assert(vision(*a, *a));
 
