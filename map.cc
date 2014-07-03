@@ -119,7 +119,7 @@ void draw_map(void)
             coord c(c0.x + x, c0.y + y);
             feat_t f = fmap(c);
             if (vision(c0, c))
-                set_colour(rgb((f == FEAT_WALL) ? 0xaaaa00 : 0xaaaaaa));
+                set_colour(rgb((f == FEAT_WALL) ? 0x55aaff : 0x55aa55));
             else
                 set_colour(rgb(0x555555));
             printf("%s", feat_glyphs[f]);
