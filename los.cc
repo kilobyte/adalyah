@@ -12,22 +12,30 @@ bool vision(coord a, coord b)
     int dist = (b - a).len();
     if (dist > 8)
         return false;
-    int ang0 = (b - a).dir() * 60;
-    for (int angd = 0; angd <= 60; ++angd)
+    coord vect = b - a;
+    int dir = vect.dir();
+    coord v[2];
+    v[0] = Compass[dir];
+    v[1] = Compass[(dir+1)%6];
+    vect = vect.rotate(-dir); // vect.x is positive, vect.y is negative
+    if (!vect.y)
+        v[1]=v[0], vect.x=1; // degenerate case
+    for (int d0 = vect.y; d0 < vect.x; ++d0)
     {
-        angle360_iterator ani(ang0 + angd, a);
-        for (int d = 1; d < dist; ++d)
+        coord pos = a;
+        int d = d0;
+        for (int i = 1; i < dist; ++i)
         {
-            ++ani;
-            if (fmap(*ani) != FEAT_FLOOR)
+            if (d >= 0)
+                pos += v[0], d += vect.y;
+            else
+                pos += v[1], d += vect.x;
+            if (fmap(pos) != FEAT_FLOOR)
                 goto blocked;
         }
-        ++ani; // the last spot is not checked for blockedness
-        if (*ani == b)
-            return true;
-blocked:;
+        return true;
+    blocked: ;
     }
-
     return false;
 }
 

@@ -14,5 +14,5 @@ void run_tests(const char* arg)
     test_map();
     test_unicode();
     generate_map();
-    //test_vision();
+    test_vision();
 }

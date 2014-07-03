@@ -4,6 +4,7 @@
 struct coord
 {
     int x; int y;
+    explicit coord() : x(0), y(0) {};
     coord(int cx, int cy) : x(cx), y(cy) {};
 
     bool operator == (const coord &c) const
