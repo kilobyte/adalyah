@@ -30,3 +30,19 @@ blocked:;
 
     return false;
 }
+
+
+void test_vision(void)
+{
+    for (spiral_iterator a(coord(0,0), 20, true); a; ++a)
+    {
+        assert(vision(*a, *a));
+
+        for (spiral_iterator b(*a, 8); b; ++b)
+        {
+            if (*a > *b)
+                continue;
+            assert(vision(*a, *b) == vision(*b, *a));
+        }
+    }
+}

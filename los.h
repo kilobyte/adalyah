@@ -3,4 +3,6 @@
 #include "coord.h"
 
 bool vision(coord a, coord b);
+
+void test_vision(void);
 #endif
