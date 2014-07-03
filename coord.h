@@ -40,6 +40,16 @@ struct coord
         return coord(x - c.x, y - c.y);
     }
 
+    bool operator < (const coord &c) const
+    {
+        return y < c.y || y == c.y && x < c.x;
+    }
+
+    bool operator > (const coord &c) const
+    {
+        return y > c.y || y == c.y && x > c.x;
+    }
+
     int len() const
     {
         if ((x ^ y) < 0) // different signs
