@@ -197,16 +197,28 @@ void draw_map(void)
             {
                 rgb_t col = rgb(cell.feat == FEAT_WALL ? 0x55aaff : 0xaaaaaa);
                 if (cell.lights)
+                {
+                    int ltotal = 128;
+                    int r = 128 * (int)col.r;
+                    int g = 128 * (int)col.g;
+                    int b = 128 * (int)col.b;
                     for (auto i = cell.lights->cbegin();
                          i != cell.lights->cend(); ++i)
                     {
                         light_t& li(lights[*i]);
                         int dist = (c - li.pos).len();
-                        // FIXME: order of lights should be irrelevant
-                        col = blend(col, li.colour,
-                                    (li.radius+1-dist) * li.intensity
-                                    / (li.radius+1));
+                        int in = (li.radius+1-dist) * li.intensity
+                                 / (li.radius+1);
+                        ltotal += in;
+                        r += in * li.colour.r;
+                        g += in * li.colour.g;
+                        b += in * li.colour.b;
                     }
+
+                    col.r = r/ltotal;
+                    col.g = g/ltotal;
+                    col.b = b/ltotal;
+                }
                 set_colour(col);
             }
             else
