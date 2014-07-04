@@ -82,13 +82,41 @@ void del_light(int lid)
     for (spiral_iterator si(lights[lid].pos, lights[lid].radius, true); si; ++si)
     {
         cell_t& cell(fmap(*si));
-        cell.lights.get()->erase(lid);
+        assert(cell.lights);
+        cell.lights->erase(lid);
         if (cell.lights->empty())
             cell.lights.reset();
     }
 
     lights[lid].radius = empty_light;
     empty_light = lid;
+}
+
+void move_light(int lid, coord pos)
+{
+    assert(lid >= 0);
+    assert(lid < (int)lights.size());
+    light_t& li(lights[lid]);
+    for (spiral_iterator si(li.pos, li.radius, true); si; ++si)
+    {
+        if ((*si - pos).len() <= li.radius)
+            continue; // still in range
+        cell_t& cell(fmap(*si));
+        assert(cell.lights);
+        cell.lights->erase(lid);
+        if (cell.lights->empty())
+            cell.lights.reset();
+    }
+    for (spiral_iterator si(pos, li.radius, true); si; ++si)
+    {
+        if ((*si - li.pos).len() <= li.radius)
+            continue; // was already in range
+        cell_t& cell(fmap(*si));
+        if (!cell.lights)
+            cell.lights.reset(new set<int>);
+        cell.lights->insert(lid);
+    }
+    li.pos = pos;
 }
 
 static const char* smap[] =

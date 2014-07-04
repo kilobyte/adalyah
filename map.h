@@ -29,6 +29,7 @@ typedef struct
 cell_t& fmap(coord c);
 int add_light(coord c, rgb_t colour, uint8_t intensity, int radius);
 void del_light(int lid);
+void move_light(int lid, coord pos);
 
 void generate_map(void);
 void draw_map(void);
