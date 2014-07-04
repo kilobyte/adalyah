@@ -98,13 +98,15 @@ static void input(void)
     case 'j':
         move_player(coord(1,0));
         break;
-    case 'H'-0x200: // Home
+    case  11-0x600: // Home
+    case 'H'-0x200:
     case 'w'-0x200:
     case 'y': // normal keyboard
     case 't': // N900
         move_player(coord(-1,-1));
         break;
-    case 'F'-0x200: // End
+    case  44-0x600: // End
+    case 'F'-0x200:
     case 'q'-0x200:
     case 'b':
         move_player(coord(0,1));
