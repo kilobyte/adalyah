@@ -5,12 +5,14 @@
 #include "term.h"
 
 struct you You = { coord(0,0) };
+vector<light_t> lights;
+int empty_light = -1; // lights.radius points to the next free element
 
 #ifdef __GXX_EXPERIMENTAL_CXX0X__
 // Buggy early compilers.
-static map<unsigned int, feat_t> FMap;
+static map<unsigned int, cell_t> FMap;
 
-feat_t& fmap(coord c)
+cell_t& fmap(coord c)
 {
     unsigned int sn = ((unsigned int)c.x) << 16
                     | ((unsigned int)c.y) & 0xffff;
@@ -21,7 +23,7 @@ feat_t& fmap(coord c)
 #define SLAB_SHIFT 6
 #define SLAB_SIZE (1<<SLAB_SHIFT)
 
-typedef feat_t slab_t[SLAB_SIZE][SLAB_SIZE];
+typedef cell_t slab_t[SLAB_SIZE][SLAB_SIZE];
 static map<unsigned int, slab_t> FMap;
 
 static unsigned int slab_num(coord c)
@@ -37,7 +39,7 @@ static void init_slab(unsigned int sn)
             slab[x][y] = FEAT_VOID;
 }
 
-feat_t& fmap(coord c)
+cell_t& fmap(coord c)
 {
     unsigned int sn = slab_num(c);
     if (!FMap.count(sn))
@@ -46,6 +48,48 @@ feat_t& fmap(coord c)
                    [((unsigned int)c.y) % SLAB_SIZE];
 }
 #endif
+
+int add_light(coord pos, rgb_t colour, uint8_t intensity, int radius)
+{
+    assert(radius >= 0);
+    assert(radius <= 8); // arbitrary
+
+    int lid;
+    if (empty_light == -1)
+        lid = lights.size(), lights.emplace_back();
+    else
+        lid = empty_light, empty_light = lights[lid].radius;
+
+    lights[lid].pos = pos;
+    lights[lid].colour = colour;
+    lights[lid].intensity = intensity;
+    lights[lid].radius = radius;
+    for (spiral_iterator si(pos, radius, true); si; ++si)
+    {
+        cell_t& cell(fmap(*si));
+        if (!cell.lights)
+            cell.lights.reset(new set<int>);
+        cell.lights->insert(lid);
+    }
+
+    return lid;
+}
+
+void del_light(int lid)
+{
+    assert(lid >= 0);
+    assert(lid < (int)lights.size());
+    for (spiral_iterator si(lights[lid].pos, lights[lid].radius, true); si; ++si)
+    {
+        cell_t& cell(fmap(*si));
+        cell.lights.get()->erase(lid);
+        if (cell.lights->empty())
+            cell.lights.reset();
+    }
+
+    lights[lid].radius = empty_light;
+    empty_light = lid;
+}
 
 static const char* smap[] =
 {
@@ -81,8 +125,11 @@ void generate_map(void)
             case '.': f = FEAT_FLOOR; break;
             case '#': f = FEAT_WALL; break;
             }
-            fmap(coord(x - smap[y] - 24, y - 9)) = f;
+            fmap(coord(x - smap[y] - 24, y - 9)).feat = f;
         }
+    add_light(coord(-5,0), rgb(0xff0000), 128, 8);
+    add_light(coord(5,2),  rgb(0x00ff00), 128, 8);
+    add_light(coord(0,6),  rgb(0x0000ff), 128, 8);
 
     You.pos = coord(0,0);
 }
@@ -117,12 +164,26 @@ void draw_map(void)
             }
 
             coord c(c0.x + x, c0.y + y);
-            feat_t f = fmap(c);
+            cell_t& cell(fmap(c));
             if (vision(c0, c))
-                set_colour(rgb((f == FEAT_WALL) ? 0x55aaff : 0x55aa55));
+            {
+                rgb_t col = rgb(cell.feat == FEAT_WALL ? 0x55aaff : 0x55aa55);
+                if (cell.lights)
+                    for (auto i = cell.lights->cbegin();
+                         i != cell.lights->cend(); ++i)
+                    {
+                        light_t& li(lights[*i]);
+                        int dist = (c - li.pos).len();
+                        // FIXME: order of lights should be irrelevant
+                        col = blend(col, li.colour,
+                                    (li.radius+1-dist) * li.intensity
+                                    / (li.radius+1));
+                    }
+                set_colour(col);
+            }
             else
                 set_colour(rgb(0x555555));
-            printf("%s", feat_glyphs[f]);
+            printf("%s", feat_glyphs[cell.feat]);
         }
         printf("\e[B\e[G");
     }
@@ -131,10 +192,10 @@ void draw_map(void)
 
 static void test_fmap_access(coord c)
 {
-    feat_t f = fmap(c);
-    fmap(c) = FEAT_FLOOR;
-    assert(fmap(c) == FEAT_FLOOR);
-    fmap(c) = f;
+    feat_t f = fmap(c).feat;
+    fmap(c).feat = FEAT_FLOOR;
+    assert(fmap(c).feat == FEAT_FLOOR);
+    fmap(c).feat = f;
 }
 
 void test_map()

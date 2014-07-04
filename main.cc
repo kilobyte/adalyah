@@ -69,7 +69,7 @@ static void draw_screen(void)
 
 static void move_player(coord d)
 {
-    if (fmap(You.pos+d) == FEAT_WALL)
+    if (fmap(You.pos+d).feat == FEAT_WALL)
         return;
     You.pos += d;
     draw_map();

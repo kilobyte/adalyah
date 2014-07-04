@@ -31,7 +31,7 @@ bool vision(coord a, coord b)
                 pos += v[0], d += vect.y;
             else
                 pos += v[1], d += vect.x;
-            if (fmap(pos) != FEAT_FLOOR)
+            if (fmap(pos).feat != FEAT_FLOOR)
                 goto blocked;
         }
         return true;
@@ -44,7 +44,7 @@ bool vision(coord a, coord b)
 void test_vision(void)
 {
     for (spiral_iterator a(coord(0,0), 30, true); a; ++a)
-        fmap(*a) = rnd(3) ? FEAT_FLOOR : FEAT_WALL;
+        fmap(*a).feat = rnd(3) ? FEAT_FLOOR : FEAT_WALL;
 
     for (spiral_iterator a(coord(0,0), 30, true); a; ++a)
     {
