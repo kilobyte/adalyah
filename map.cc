@@ -167,7 +167,7 @@ void draw_map(void)
             cell_t& cell(fmap(c));
             if (vision(c0, c))
             {
-                rgb_t col = rgb(cell.feat == FEAT_WALL ? 0x55aaff : 0x55aa55);
+                rgb_t col = rgb(cell.feat == FEAT_WALL ? 0x55aaff : 0xaaaaaa);
                 if (cell.lights)
                     for (auto i = cell.lights->cbegin();
                          i != cell.lights->cend(); ++i)
