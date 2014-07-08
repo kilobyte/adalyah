@@ -165,7 +165,7 @@ void generate_map(void)
 static const char* feat_glyphs[] =
 {
     "　",
-    "░░",
+    "▒▒",
     "．",
 };
 
