@@ -1,5 +1,5 @@
 #include "adalyah.h"
-#include <map>
+#include <unordered_map>
 #include "los.h"
 #include "map.h"
 #include "term.h"
@@ -10,7 +10,7 @@ int empty_light = -1; // lights.radius points to the next free element
 
 #ifdef __GXX_EXPERIMENTAL_CXX0X__
 // Buggy early compilers.
-static map<unsigned int, cell_t> FMap;
+static unordered_map<unsigned int, cell_t> FMap;
 
 cell_t& fmap(coord c)
 {
@@ -24,7 +24,7 @@ cell_t& fmap(coord c)
 #define SLAB_SIZE (1<<SLAB_SHIFT)
 
 typedef cell_t slab_t[SLAB_SIZE][SLAB_SIZE];
-static map<unsigned int, slab_t> FMap;
+static unordered_map<unsigned int, slab_t> FMap;
 
 static unsigned int slab_num(coord c)
 {
