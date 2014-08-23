@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "los.h"
 #include "map.h"
+#include "object.h"
 #include "term.h"
 
 struct you You = { coord(0,0) };
@@ -160,6 +161,7 @@ void generate_map(void)
     add_light(coord(0,6),  rgb(0x0000ff), 128, 8);
 
     You.pos = coord(0,0);
+    add_obj(coord(3,3));
 }
 
 static const char* feat_glyphs[] =
@@ -192,6 +194,15 @@ void draw_map(void)
             }
 
             coord c(c0.x + x, c0.y + y);
+
+            glyph_t og;
+            if (view_obj_at(og, c))
+            {
+                set_colour(og.colour);
+                printf("%s", og.symbol);
+                continue;
+            }
+
             cell_t& cell(fmap(c));
             if (vision(c0, c))
             {

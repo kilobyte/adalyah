@@ -62,6 +62,14 @@ struct coord
     coord rotate(int dir) const;
     int dir() const;
     int angle360() const;
+
+    static size_t hash(const coord c)
+    {
+        if (sizeof(size_t) >= 8)
+            return ((size_t)(uint32_t)c.x)<<32 ^ (size_t)(uint32_t)c.y;
+        else
+            return ((size_t)(uint32_t)c.x)<<16 ^ (size_t)(uint32_t)c.y;
+    }
 };
 
 extern coord Compass[6];
