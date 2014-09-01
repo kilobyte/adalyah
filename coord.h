@@ -71,10 +71,8 @@ template<> struct hash<coord>
 {
     size_t operator()(const coord &c) const
     {
-        if (sizeof(size_t) >= 8)
-            return ((size_t)(uint32_t)c.x)<<32 ^ (size_t)(uint32_t)c.y;
-        else
-            return ((size_t)(uint32_t)c.x)<<16 ^ (size_t)(uint32_t)c.y;
+        return ((size_t)(uint32_t)c.x) << (sizeof(size_t)>=8 ? 32 : 16)
+              ^ (size_t)(uint32_t)c.y;
     }
 };
 };
