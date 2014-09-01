@@ -5,8 +5,7 @@
 #include "object.h"
 
 static vector<obj_t> objs;
-static unordered_map<coord, set<int>, function<decltype(coord::hash)> >
-    omap(0, coord::hash);
+static unordered_map<coord, set<int> > omap;
 
 int add_obj(coord pos)
 {
