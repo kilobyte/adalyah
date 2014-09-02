@@ -42,7 +42,7 @@ void draw_map(void);
 
 struct you
 {
-    coord pos;
+    int oid;
 };
 extern struct you You;
 

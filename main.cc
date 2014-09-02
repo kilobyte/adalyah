@@ -6,6 +6,7 @@
 #include <getopt.h>
 #include "keyboard.h"
 #include "map.h"
+#include "object.h"
 #include "random.h"
 #include "term.h"
 #include "test.h"
@@ -69,9 +70,11 @@ static void draw_screen(void)
 
 static void move_player(coord d)
 {
-    if (fmap(You.pos+d).feat == FEAT_WALL)
+    coord ynpos = Objs[You.oid].pos + d;
+    if (fmap(ynpos).feat == FEAT_WALL)
         return;
-    You.pos += d;
+
+    move_obj(You.oid, ynpos);
     draw_map();
     fflush(stdout);
 }

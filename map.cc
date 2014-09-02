@@ -5,7 +5,7 @@
 #include "object.h"
 #include "term.h"
 
-struct you You = { coord(0,0) };
+struct you You;
 vector<light_t> lights;
 int empty_light = -1; // lights.radius points to the next free element
 
@@ -160,8 +160,8 @@ void generate_map(void)
     add_light(coord(5,2),  rgb(0x00ff00), 128, 8);
     add_light(coord(0,6),  rgb(0x0000ff), 128, 8);
 
-    You.pos = coord(0,0);
-    add_obj(coord(3,3));
+    You.oid = add_obj(OBJ_PLAYER, coord(0,0));
+    add_obj(OBJ_TURRET, coord(3,3));
 }
 
 static const char* feat_glyphs[] =
@@ -173,7 +173,7 @@ static const char* feat_glyphs[] =
 
 void draw_map(void)
 {
-    coord c0 = You.pos;
+    coord c0 = Objs[You.oid].pos;
     int cl = -((TermLayout.sx - 2) / 4);
     int ct = -((TermLayout.map_lines - 1) / 2);
     int ch = TermLayout.map_lines;
@@ -186,13 +186,6 @@ void draw_map(void)
             printf(" ");
         for (int x = cl + ((y-1)>>1); cw; --cw, ++x)
         {
-            if (!x && !y)
-            {
-                set_colour(rgb(0xaaaaaa));
-                printf("＠");
-                continue;
-            }
-
             coord c(c0.x + x, c0.y + y);
 
             glyph_t og;
