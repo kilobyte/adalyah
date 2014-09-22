@@ -1,11 +1,16 @@
 #include "adalyah.h"
+#include <sys/time.h>
+#include <map>
 #include <set>
 #include <unordered_map>
 #include <vector>
 #include "object.h"
+#include "random.h"
 
 vector<obj_t> Objs;
 static unordered_map<coord, set<int> > omap;
+
+static multimap<timee_t, int> events;
 
 int add_obj(obj_type type, coord pos)
 {
@@ -14,6 +19,7 @@ int add_obj(obj_type type, coord pos)
 
     Objs[oid].pos = pos;
     Objs[oid].type = type;
+    Objs[oid].next_act = 0;
     omap[pos].insert(oid);
     return oid;
 }
@@ -76,6 +82,76 @@ bool view_obj_at(glyph_t& glyph, coord pos)
         glyph.symbol = "＊";
         glyph.colour = rgb(0x77aadd);
         break;
+    case OBJ_WANDER:
+        glyph.symbol = "＆";
+        glyph.colour = rgb(0xddaa00);
+        break;
     }
     return true;
+}
+
+timee_t next_event()
+{
+    auto ne = events.begin();
+    if (ne == events.end())
+        return TIMEE_NEVER;
+    return ne->first;
+}
+
+timee_t now()
+{
+    struct timeval tn;
+    gettimeofday(&tn, 0);
+    return ((timee_t)tn.tv_sec) * TIMEE_SCALE
+         + ((timee_t)tn.tv_usec) * TIMEE_SCALE / 1000000;
+}
+
+static void obj_act(int oid)
+{
+    assert(oid >= 0);
+    assert(oid < (int)Objs.size());
+    obj_t& o(Objs[oid]);
+
+    switch (o.type)
+    {
+    case OBJ_WANDER:
+        {
+            vector<int> dirs;
+            for (int i = 0; i < 6; ++i)
+                if (fmap(o.pos + Compass[i]).feat != FEAT_WALL)
+                    dirs.push_back(i);
+            if (dirs.size())
+            {
+                int d = rnd(dirs.size());
+                move_obj(oid, o.pos + Compass[d]);
+            }
+        }
+
+        schedule_obj(oid, o.next_act + TIMEE_SCALE);
+        break;
+
+    default:;
+    }
+}
+
+void acts()
+{
+    timee_t tn = now();
+    while (1)
+    {
+        auto ne = events.begin();
+        if (ne == events.end())
+            return;
+        if (ne->first > tn)
+            return;
+
+        obj_act(ne->second);
+        events.erase(ne);
+    }
+}
+
+void schedule_obj(int oid, timee_t when)
+{
+    Objs[oid].next_act = when;
+    events.insert(pair<timee_t, int>(when, oid)); // FIXME: C++11
 }

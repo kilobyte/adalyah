@@ -75,8 +75,6 @@ static void move_player(coord d)
         return;
 
     move_obj(You.oid, ynpos);
-    draw_map();
-    fflush(stdout);
 }
 
 static void input(void)
@@ -139,9 +137,24 @@ static NORETURN input_loop(void)
 
     while (1)
     {
+        timee_t te = next_event();
         struct timespec tv;
-        tv.tv_sec  = 1; // TODO: time until next event
-        tv.tv_nsec = 0;
+        if (te == TIMEE_NEVER)
+        {
+            tv.tv_sec = 1;
+            tv.tv_nsec = 0;
+        }
+        else
+        {
+            te -= now();
+            if (te > 0)
+            {
+                tv.tv_sec  = te / TIMEE_SCALE;
+                tv.tv_nsec = te % TIMEE_SCALE;
+            }
+            else
+                tv.tv_sec = tv.tv_nsec = 0;
+        }
 
         fd_set readfdmask;
         FD_ZERO(&readfdmask);
@@ -158,8 +171,13 @@ static NORETURN input_loop(void)
             term_getsize();
             draw_screen();
         }
+
         if (sres>=0 && FD_ISSET(0, &readfdmask))
             input();
+        acts();
+
+        draw_map();
+        fflush(stdout);
     }
 }
 

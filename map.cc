@@ -162,6 +162,7 @@ void generate_map(void)
 
     You.oid = add_obj(OBJ_PLAYER, coord(0,0));
     add_obj(OBJ_TURRET, coord(3,3));
+    schedule_obj(add_obj(OBJ_WANDER, coord(5,3)), now());
 }
 
 static const char* feat_glyphs[] =
