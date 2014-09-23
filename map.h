@@ -26,12 +26,6 @@ typedef struct
     int radius;
 } light_t;
 
-typedef struct
-{
-    const char* symbol;
-    rgb_t colour;
-} glyph_t;
-
 cell_t& fmap(coord c);
 int add_light(coord c, rgb_t colour, uint8_t intensity, int radius);
 void del_light(int lid);

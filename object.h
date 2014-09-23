@@ -2,6 +2,7 @@
 #define OBJECT_H
 #include "coord.h"
 #include "map.h"
+#include "term.h"
 
 enum obj_type
 {

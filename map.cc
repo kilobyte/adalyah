@@ -175,25 +175,22 @@ static const char* feat_glyphs[] =
 void draw_map(void)
 {
     coord c0 = Objs[You.oid].pos;
-    int cl = -((TermLayout.sx - 2) / 4);
-    int ct = -((TermLayout.map_lines - 1) / 2);
+    int cl = TermLayout.cl;
+    int ct = TermLayout.ct;
     int ch = TermLayout.map_lines;
 
-    printf("\e[?25l\e[H");
+    hide_cursor();
     for (int y = ct; ch; --ch, ++y)
     {
         int cw = (TermLayout.sx - (y&1)) / 2;
-        if (y&1)
-            printf(" ");
         for (int x = cl + ((y-1)>>1); cw; --cw, ++x)
         {
             coord c(c0.x + x, c0.y + y);
 
-            glyph_t og;
-            if (view_obj_at(og, c))
+            glyph_t g;
+            if (view_obj_at(g, c))
             {
-                set_colour(og.colour);
-                printf("%s", og.symbol);
+                draw_glyph(x, y, g);
                 continue;
             }
 
@@ -224,15 +221,16 @@ void draw_map(void)
                     col.g = g/ltotal;
                     col.b = b/ltotal;
                 }
-                set_colour(col);
+                g.colour = col;
             }
             else
-                set_colour(rgb(0x555555));
-            printf("%s", feat_glyphs[cell.feat]);
+                g.colour = rgb(0x555555);
+            g.symbol = feat_glyphs[cell.feat];
+            draw_glyph(x, y, g);
         }
-        printf("\e[B\e[G");
     }
-    printf("\e[?25h");
+    printf("\e[%dH", TermLayout.map_lines+1);
+    show_cursor();
 }
 
 static void test_fmap_access(coord c)
