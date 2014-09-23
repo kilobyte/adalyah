@@ -122,7 +122,7 @@ static void obj_act(int oid)
                     dirs.push_back(i);
             if (dirs.size())
             {
-                int d = rnd(dirs.size());
+                int d = dirs[rnd(dirs.size())];
                 move_obj(oid, o.pos + Compass[d]);
             }
         }
