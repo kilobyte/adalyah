@@ -186,17 +186,16 @@ void draw_map(void)
         for (int x = cl + ((y-1)>>1); cw; --cw, ++x)
         {
             coord c(c0.x + x, c0.y + y);
-
             glyph_t g;
-            if (view_obj_at(g, c))
-            {
-                draw_glyph(x, y, g);
-                continue;
-            }
-
             cell_t& cell(fmap(c));
             if (vision(c0, c))
             {
+                if (view_obj_at(g, c))
+                {
+                    draw_glyph(x, y, g);
+                    continue;
+                }
+
                 rgb_t col = rgb(cell.feat == FEAT_WALL ? 0x55aaff : 0xaaaaaa);
                 if (cell.lights)
                 {
