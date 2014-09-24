@@ -153,5 +153,9 @@ void acts()
 void schedule_obj(int oid, timee_t when)
 {
     Objs[oid].next_act = when;
-    events.insert(pair<timee_t, int>(when, oid)); // FIXME: C++11
+#ifdef __GXX_EXPERIMENTAL_CXX0X__
+    events.insert(pair<timee_t, int>(when, oid));
+#else
+    events.emplace(when, oid);
+#endif
 }
