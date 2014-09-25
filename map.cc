@@ -202,9 +202,9 @@ void draw_map(void)
                 if (cell.lights)
                 {
                     int ltotal = 128;
-                    int r = 128 * (int)col.r;
-                    int g = 128 * (int)col.g;
-                    int b = 128 * (int)col.b;
+                    int r = ltotal * (int)col.r;
+                    int g = ltotal * (int)col.g;
+                    int b = ltotal * (int)col.b;
                     for (auto i = cell.lights->cbegin();
                          i != cell.lights->cend(); ++i)
                     {
