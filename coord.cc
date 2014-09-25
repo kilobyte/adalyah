@@ -64,12 +64,12 @@ int coord::angle360() const
 angle360_iterator::angle360_iterator(int _angle, coord start)
     : cur(start), err(0)
 {
-    angle = (_angle + 1800000000) % 360;
+    angle = (_angle + 900000000) % 360;
 }
 
 void angle360_iterator::operator ++()
 {
-    int ac = (angle + err + 1800000030) / 60 % 6;
+    int ac = (angle + err + 900000030) / 60 % 6;
     err += angle - ac * 60;
     cur += Compass[ac];
 }
