@@ -19,6 +19,7 @@ int add_obj(obj_type type, coord pos)
 
     Objs[oid].pos = pos;
     Objs[oid].type = type;
+    Objs[oid].light = -1;
     Objs[oid].next_act = 0;
     omap[pos].insert(oid);
     return oid;
@@ -37,6 +38,8 @@ void del_obj(int oid)
     assert(oid < (int)Objs.size());
 
     unmap_obj(oid);
+    if (Objs[oid].light != -1)
+        del_light(Objs[oid].light);
 
     // Shorten the vector.
     if (oid < (int)Objs.size() - 1)
@@ -57,6 +60,8 @@ void move_obj(int oid, coord newpos)
     unmap_obj(oid);
     Objs[oid].pos = newpos;
     omap[Objs[oid].pos].insert(oid);
+    if (Objs[oid].light != -1)
+        move_light(Objs[oid].light, newpos);
 }
 
 bool view_obj_at(glyph_t& glyph, coord pos)
