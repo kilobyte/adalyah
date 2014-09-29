@@ -9,13 +9,17 @@
 
 vector<obj_t> Objs;
 static unordered_map<coord, set<int> > omap;
+static int empty_object = -1; // obj.number points to the next element
 
 static multimap<timee_t, int> events;
 
 int add_obj(obj_type type, coord pos)
 {
-    int oid = Objs.size();
-    Objs.emplace_back();
+    int oid;
+    if (empty_object == -1)
+        oid = Objs.size(), Objs.emplace_back();
+    else
+        oid = empty_object, empty_object = Objs[oid].number;
 
     Objs[oid].pos = pos;
     Objs[oid].type = type;
@@ -41,15 +45,8 @@ void del_obj(int oid)
     if (Objs[oid].light != -1)
         del_light(Objs[oid].light);
 
-    // Shorten the vector.
-    if (oid < (int)Objs.size() - 1)
-    {
-        int last_oid = Objs.size() - 1;
-        unmap_obj(last_oid);
-        Objs[oid] = Objs[last_oid];
-        omap[Objs[oid].pos].insert(oid);
-    }
-    Objs.pop_back();
+    Objs[oid].number = empty_object;
+    empty_object = oid;
 }
 
 void move_obj(int oid, coord newpos)

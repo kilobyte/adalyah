@@ -20,6 +20,7 @@ typedef struct
 {
     obj_type type;
     coord pos;
+    int number;
     int light;
     timee_t next_act;
 } obj_t;
