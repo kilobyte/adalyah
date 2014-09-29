@@ -161,8 +161,9 @@ void generate_map(void)
     add_light(coord(0,6),  rgb(0x0000ff), 128, 8);
 
     You.oid = add_obj(OBJ_PLAYER, coord(0,0));
-    add_obj(OBJ_TURRET, coord(3,3));
-    int oid = add_obj(OBJ_WANDER, coord(5,3));
+    int oid = add_obj(OBJ_TURRET, coord(3,3));
+    schedule_obj(oid, now());
+    oid = add_obj(OBJ_WANDER, coord(5,3));
     schedule_obj(oid, now());
     Objs[oid].light = add_light(Objs[oid].pos, rgb(0xdd0000), 255, 1);
 }

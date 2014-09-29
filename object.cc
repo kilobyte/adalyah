@@ -4,6 +4,7 @@
 #include <set>
 #include <unordered_map>
 #include <vector>
+#include "los.h"
 #include "object.h"
 #include "random.h"
 
@@ -116,6 +117,32 @@ static void obj_act(int oid)
 
     switch (o.type)
     {
+    case OBJ_TURRET:
+        if (vision(o.pos, Objs[You.oid].pos))
+        {
+            int bid = add_obj(OBJ_BULLET, o.pos);
+            Objs[bid].dir360 = (Objs[You.oid].pos - o.pos).angle360();
+            #define BULLET_SPREAD 30
+            Objs[bid].err360 = rnd(BULLET_SPREAD*2+1) - BULLET_SPREAD;
+            schedule_obj(bid, now());
+        }
+
+        schedule_obj(oid, o.next_act + TIMEE_SCALE /2);
+        break;
+
+    case OBJ_BULLET:
+        {
+            int ac = (o.dir360 + o.err360 + 900000030) / 60 % 6;
+            o.err360 += o.dir360 - ac * 60;
+            coord npos = o.pos + Compass[ac];
+            if (fmap(npos).feat == FEAT_WALL)
+                return del_obj(oid);
+            move_obj(oid, npos);
+        }
+
+        schedule_obj(oid, o.next_act + TIMEE_SCALE/6);
+        break;
+
     case OBJ_WANDER:
         {
             vector<int> dirs;

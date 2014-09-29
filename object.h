@@ -23,6 +23,7 @@ typedef struct
     int number;
     int light;
     timee_t next_act;
+    int dir360, err360;
 } obj_t;
 
 extern vector<obj_t> Objs;
