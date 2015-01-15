@@ -38,4 +38,6 @@ timee_t now();
 
 void schedule_obj(int oid, timee_t when);
 void acts();
+
+bool is_passable(coord c);
 #endif

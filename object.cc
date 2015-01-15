@@ -147,7 +147,7 @@ static void obj_act(int oid)
         {
             vector<int> dirs;
             for (int i = 0; i < 6; ++i)
-                if (fmap(o.pos + Compass[i]).feat != FEAT_WALL)
+                if (is_passable(o.pos + Compass[i]))
                     dirs.push_back(i);
             if (dirs.size())
             {
@@ -187,4 +187,28 @@ void schedule_obj(int oid, timee_t when)
 #else
     events.emplace(when, oid);
 #endif
+}
+
+static bool is_obj_passable(obj_type t)
+{
+    switch (t)
+    {
+    case OBJ_BULLET:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool is_passable(coord c)
+{
+    if (fmap(c).feat == FEAT_WALL)
+        return false;
+    auto os = omap.find(c);
+    if (os == omap.end())
+        return true;
+    for (auto oi = os->second.begin(); oi != os->second.end(); ++oi)
+        if (!is_obj_passable(Objs[*oi].type))
+            return false;
+    return true;
 }

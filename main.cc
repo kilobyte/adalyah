@@ -71,7 +71,7 @@ static void draw_screen(void)
 static void move_player(coord d)
 {
     coord ynpos = Objs[You.oid].pos + d;
-    if (fmap(ynpos).feat == FEAT_WALL)
+    if (!is_passable(ynpos))
         return;
 
     move_obj(You.oid, ynpos);
