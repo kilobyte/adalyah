@@ -71,7 +71,8 @@ bool view_obj_at(glyph_t& glyph, coord pos)
     auto top = o->second.begin();
     assert(top != o->second.end());
 
-    switch (Objs[*top].type)
+    auto ob(Objs[*top]);
+    switch (ob.type)
     {
     case OBJ_PLAYER:
         glyph.symbol = "＠";
@@ -88,6 +89,13 @@ bool view_obj_at(glyph_t& glyph, coord pos)
     case OBJ_WANDER:
         glyph.symbol = "＆";
         glyph.colour = rgb(0xddaa00);
+        break;
+    case OBJ_EXPLOSION:
+        glyph.symbol = "{}";
+        if (ob.number > 6)
+            glyph.colour = rgb(0xe00000 + (ob.number-6) * 0x002000);
+        else
+            glyph.colour = rgb(0x100000 + ob.number * 0x200000);
         break;
     }
     return true;
@@ -107,6 +115,23 @@ timee_t now()
     gettimeofday(&tn, 0);
     return ((timee_t)tn.tv_sec) * TIMEE_SCALE
          + ((timee_t)tn.tv_usec) * TIMEE_SCALE / 1000000;
+}
+
+static void spawn_explosion(coord c0)
+{
+    if (is_passable(c0))
+    {
+        int bid = add_obj(OBJ_EXPLOSION, c0);
+        Objs[bid].number = 12;
+        schedule_obj(bid, now());
+    }
+    for (int d = 0; d < 6; ++d)
+        if (is_passable(c0 + Compass[d]))
+        {
+            int bid = add_obj(OBJ_EXPLOSION, c0 + Compass[d]);
+            Objs[bid].number = 12 - rnd(4);
+            schedule_obj(bid, now());
+        }
 }
 
 static void obj_act(int oid)
@@ -135,8 +160,11 @@ static void obj_act(int oid)
             int ac = (o.dir360 + o.err360 + 900000030) / 60 % 6;
             o.err360 += o.dir360 - ac * 60;
             coord npos = o.pos + Compass[ac];
-            if (fmap(npos).feat == FEAT_WALL)
+            if (!is_passable(npos))
+            {
+                spawn_explosion(o.pos);
                 return del_obj(oid);
+            }
             move_obj(oid, npos);
         }
 
@@ -157,6 +185,12 @@ static void obj_act(int oid)
         }
 
         schedule_obj(oid, o.next_act + TIMEE_SCALE);
+        break;
+
+    case OBJ_EXPLOSION:
+        if (--o.number <= 0)
+            return del_obj(oid);
+        schedule_obj(oid, o.next_act + TIMEE_SCALE/12);
         break;
 
     default:;
@@ -194,6 +228,7 @@ static bool is_obj_passable(obj_type t)
     switch (t)
     {
     case OBJ_BULLET:
+    case OBJ_EXPLOSION:
         return true;
     default:
         return false;

@@ -10,6 +10,7 @@ enum obj_type
     OBJ_TURRET,
     OBJ_BULLET,
     OBJ_WANDER,
+    OBJ_EXPLOSION,
 };
 
 typedef int64_t timee_t;
