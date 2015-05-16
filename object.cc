@@ -79,7 +79,7 @@ bool view_obj_at(glyph_t& glyph, coord pos)
         glyph.colour = rgb(0xaaaaaa);
         break;
     case OBJ_TURRET:
-        glyph.symbol = "/\\";
+        glyph.symbol = "⼈";
         glyph.colour = rgb(0xdddddd);
         break;
     case OBJ_BULLET:
@@ -91,7 +91,7 @@ bool view_obj_at(glyph_t& glyph, coord pos)
         glyph.colour = rgb(0xddaa00);
         break;
     case OBJ_EXPLOSION:
-        glyph.symbol = "{}";
+        glyph.symbol = "〄";
         if (ob.number > 6)
             glyph.colour = rgb(0xe00000 + (ob.number-6) * 0x002000);
         else
