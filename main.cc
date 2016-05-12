@@ -30,7 +30,7 @@ static NORETURN keyboard_test(void)
         else if (ch < 32)
             printf("\e[32m%x-%x\e[1;33m¤\e[0m ", ch&0xff, -(ch&~0xff));
         else
-            printf("\e[32m%x\e[1;31m%C\e[0m ", ch, ch);
+            printf("\e[32m%x\e[1;31m%C\e[0m ", ch, (wchar_t)ch);
         fflush(stdout);
         if (ch == 'q')
         {
