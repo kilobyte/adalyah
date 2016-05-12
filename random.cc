@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 #include "random.h"
 
 void seed_rng()

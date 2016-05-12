@@ -2,6 +2,7 @@
 #include <errno.h>
 #include <poll.h>
 #include <unistd.h>
+#include <string>
 #include "keyboard.h"
 
 #define GETCB \

@@ -1,6 +1,7 @@
 namespace std {};
 using namespace std;
 #include <algorithm>
+#include <stdint.h>
 
 #if defined(__GNUC__)
 # define NORETURN __attribute__ ((noreturn)) void

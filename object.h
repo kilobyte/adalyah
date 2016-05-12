@@ -3,6 +3,7 @@
 #include "coord.h"
 #include "map.h"
 #include "term.h"
+#include <vector>
 
 enum obj_type
 {

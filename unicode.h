@@ -1,5 +1,6 @@
 #ifndef UNICODE_H
 #define UNICODE_H
+#include <string>
 
 int wctoutf8(char *d, ucs_t s);
 int utf8towc(ucs_t *d, const char *s);
