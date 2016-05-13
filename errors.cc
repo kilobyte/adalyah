@@ -8,12 +8,12 @@
 NORETURN die(const char *file, unsigned line, const char *format, ...)
 {
     va_list args;
-    char *msg;
+    char *msg = nullptr;
 
     term_restore();
 
     va_start(args, format);
-    vasprintf(&msg, format, args);
+    if (vasprintf(&msg, format, args) == -1); // null on alloc failure
     va_end(args);
 
     fprintf(stderr, "ERROR in '%s' at line %u: %s", file, line, msg);
