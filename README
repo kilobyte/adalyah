@@ -1,0 +1,4 @@
+This is an aborted attempt at a roguelike on a hex grid.  It can use
+̈́“fullwidth” ASCII, CJK characters, line-drawing and/or digraphs.
+
+Uploading this only in case someone wants to reuse the code.
