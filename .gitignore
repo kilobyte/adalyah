@@ -1,21 +1,8 @@
 adalyah
 *~
 *.o
-adalyah-*.tar.xz
 
-# autoconfage
-Makefile.in
-aclocal.m4
-autom4te.cache/
-config.h.in
-configure
-depcomp
-install-sh
-missing
-compile
-.deps/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
 Makefile
-config.h
-config.log
-config.status
-stamp-h1
