@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <stdio.h>
 #include "keyboard.h"
 #include "map.h"
 #include "object.h"

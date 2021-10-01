@@ -1,5 +1,6 @@
 #include "adalyah.h"
 #include <unordered_map>
+#include <stdio.h>
 #include "los.h"
 #include "map.h"
 #include "object.h"
